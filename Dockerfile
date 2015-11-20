@@ -19,4 +19,4 @@ RUN if [ ! -z $glance_commit ]; then cd glance && git checkout $glance_commit; f
 # Apply source code patches
 RUN mkdir -p /patches
 COPY patches/* /patches/
-RUN /patches/patch.sh
+RUN if [ -f /patches/patch.sh ]; then /patches/patch.sh; fi
