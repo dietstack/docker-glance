@@ -20,3 +20,27 @@ RUN if [ ! -z $glance_commit ]; then cd glance && git checkout $glance_commit; f
 RUN mkdir -p /patches
 COPY patches/* /patches/
 RUN if [ -f /patches/patch.sh ]; then /patches/patch.sh; fi
+
+# Install glance with dependencies
+RUN cd glance; pip install -r requirements.txt; python setup.py install
+
+# prepare directories for storing image files and fore configs
+RUN mkdir -p /var/lib/glance/images /etc/glance; cp -a /glance/etc/* /etc/glance
+
+# copy keystone configs
+COPY configs/glance/* /etc/glance/
+
+# external volume
+VOLUME /glance-override
+
+# copy startup scripts
+COPY scripts /app
+
+# Define workdir
+WORKDIR /app
+RUN chmod +x /app/*
+
+ENTRYPOINT ["/app/entrypoint.sh"]
+
+# Define default command.
+#CMD ["glance-control"]
