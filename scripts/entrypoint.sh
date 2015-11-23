@@ -2,10 +2,14 @@
 set -e
 
 # set debug
-[[ $DEBUG ]] && set -x
+DEBUG_OPT=false
+if [[ $DEBUG ]]; then
+        set -x
+        DEBUG_OPT=true
+fi
 
-# if keystone is not installed, quit
-which glance-manage &>/dev/null || exit 1
+# if glance is not installed, quit
+which glance-control &>/dev/null || exit 1
 
 # define variable defaults
 
@@ -20,7 +24,7 @@ PUBLISHER_ID=${PUBLISHER_ID:-None}
 GLANCE_REGISTRY_PORT=${GLANCE_REGISTRY_PORT:-9191}
 GLANCE_DATA_DIR=${GLANCE_DATA_DIR:-"\/var\/lib\/glance\/images"}
 NUM_OF_REGISTRY_WORKERS=${NUM_OF_REGISTRY_WORKERS:-5}
-ADMIN_TENANT_NAME=${ADMIN_TENANT_NAME:-admin}
+ADMIN_TENANT_NAME=${ADMIN_TENANT_NAME:-service}
 ADMIN_USER=${ADMIN_USER:-admin}
 ADMIN_PASSWORD=${ADMIN_PASSWORD:-veryS3cr3t}
 
@@ -60,6 +64,7 @@ if [[ $OVERRIDE -eq 0 ]]; then
                 sed -i "s/_ADMIN_TENANT_NAME_/$ADMIN_TENANT_NAME/" $CONF_DIR/$CONF
                 sed -i "s/_ADMIN_USER_/$ADMIN_USER/" $CONF_DIR/$CONF
                 sed -i "s/_ADMIN_PASSWORD_/$ADMIN_PASSWORD/" $CONF_DIR/$CONF
+                sed -i "s/_DEBUG_OPT_/$DEBUG_OPT/" $CONF_DIR/$CONF
         done
         echo "$LOG_MESSAGE  ==> done"
 fi
