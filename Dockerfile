@@ -22,7 +22,7 @@ COPY patches/* /patches/
 RUN if [ -f /patches/patch.sh ]; then /patches/patch.sh; fi
 
 # Install glance with dependencies
-RUN cd glance; pip install -r requirements.txt; pip install supervisor; python setup.py install
+RUN cd glance; pip install -r requirements.txt; pip install supervisor mysql-python python-memcached; python setup.py install
 
 # prepare directories for storing image files and fore configs
 RUN mkdir -p /var/lib/glance/images /etc/glance /etc/supervisord /var/log/supervisord; cp -a /glance/etc/* /etc/glance
@@ -46,4 +46,4 @@ RUN chmod +x /app/*
 ENTRYPOINT ["/app/entrypoint.sh"]
 
 # Define default command.
-#CMD ["/usr/local/bin/supervisord", "-c", "/etc/supervisord.conf"]
+CMD ["/usr/local/bin/supervisord", "-c", "/etc/supervisord.conf"]
