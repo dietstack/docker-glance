@@ -4,6 +4,7 @@ MAINTAINER Kamil Madac (kamil.madac@t-systems.sk)
 
 ENV http_proxy="http://172.27.10.114:3128"
 ENV https_proxy="http://172.27.10.114:3128"
+ENV no_proxy="127.0.0.1,localhost"
 
 # Source codes to download
 ENV glance_repo="https://github.com/openstack/glance"
