@@ -14,7 +14,6 @@ There is a script called `test.sh`. This can be used either for development or t
 When you run the script with parameter noclean, it'll build environment, runs all tests and leave all dockers running. This is usefol for development of glance containers.
 
 # Services
-
 Glance project consists of several services/daemons (api, registry, cache, scrubbing). For the beginning we implement only api and registry which are vital for basic operation.
 Both services are executed under Supervisor to cover multiple daemons with one daemon. Supervisor is then run by docker CMD command.
 
