@@ -64,15 +64,17 @@ docker run -d --net=host -e DEBUG="true" -e DB_SYNC="true" --name keystone keyst
 echo "Wait till keystone is running ."
 
 wait_for_port 5000 30
-if [ $? -ne 0 ]; then
+ret=$?
+if [ $ret -ne 0 ]; then
     echo "Error: Port 5000 (Keystone) not bounded!"
-    exit $?
+    exit $ret
 fi
 
 wait_for_port 35357 30
-if [ $? -ne 0 ]; then
+ret=$?
+if [ $ret -ne 0 ]; then
     echo "Error: Port 35357 (Keystone Admin) not bounded!"
-    exit $?
+    exit $ret
 fi
 
 echo "Starting glance container"
@@ -82,16 +84,27 @@ docker run -d --net=host -e DEBUG="true" -e DB_SYNC="true" --name glance glance:
 ##### TESTS #####
 
 wait_for_port 9191 30
-if [ $? -ne 0 ]; then
+ret=$?
+if [ $ret -ne 0 ]; then
     echo "Error: Port 9191 (Glance Registry) not bounded!"
-    exit $?
+    exit $ret
 fi
 
 wait_for_port 9292 30
-if [ $? -ne 0 ]; then
+ret=$?
+if [ $ret -ne 0 ]; then
     echo "Error: Port 9292 (Glance API) not bounded!"
-    exit $?
+    exit $ret
 fi
+
+# bootstrap openstack settings and upload image to glance
+docker run --net=host osadmin /bin/bash -c ". /app/adminrc; bash /app/bootstrap.sh; . /app/userrc; openstack image create --container-format bare --disk-format qcow2 --file /app/cirros.img --public cirros"
+ret=$?
+if [ $ret -ne 0 ]; then
+    echo "Error: Bootstrap and adding of cirros image failed!"
+    exit $ret
+fi
+
 
 echo "======== Success :) ========="
 
