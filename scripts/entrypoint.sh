@@ -53,7 +53,7 @@ if [[ $OVERRIDE -eq 0 ]]; then
 
                 sed -i "s/_DB_HOST_/$DB_HOST/" $CONF_DIR/$CONF
                 sed -i "s/_DB_PORT_/$DB_PORT/" $CONF_DIR/$CONF
-		sed -i "s/_DB_PASSWORD_/$DB_PASSWORD/" $CONF_DIR/$CONF
+                sed -i "s/_DB_PASSWORD_/$DB_PASSWORD/" $CONF_DIR/$CONF
                 sed -i "s/_BIND_HOST_/$BIND_HOST/" $CONF_DIR/$CONF
                 sed -i "s/_GLANCE_API_PORT_/$GLANCE_API_PORT/" $CONF_DIR/$CONF
                 sed -i "s/_NUM_OF_API_WORKERS_/$NUM_OF_API_WORKERS/" $CONF_DIR/$CONF
@@ -71,5 +71,5 @@ fi
 
 [[ $DB_SYNC ]] && echo "Running db_sync ..." && glance-manage db sync
 
-echo "$LOG_MESSAGE starting glance-control"
+echo "$LOG_MESSAGE starting glance"
 exec "$@"
