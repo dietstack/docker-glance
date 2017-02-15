@@ -8,11 +8,11 @@ ENV no_proxy="127.0.0.1,localhost"
 
 # Source codes to download
 ENV glance_repo="https://github.com/openstack/glance"
-ENV glance_branch="stable/liberty"
+ENV glance_branch="stable/newton"
 ENV glance_commit=""
 
 # Download glance source codes
-RUN git clone $glance_repo --single-branch --branch $glance_branch; 
+RUN git clone $glance_repo --depth=1 --single-branch --branch $glance_branch;
 
 # Checkout commit, if it was defined above
 RUN if [ ! -z $glance_commit ]; then cd glance && git checkout $glance_commit; fi

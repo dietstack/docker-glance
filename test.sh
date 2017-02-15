@@ -39,8 +39,7 @@ get_docker_image_from_release osadmin http://${RELEASE_REPO}/docker-osadmin late
 ##### Start Containers
 
 echo "Starting galera container ..."
-GALERA_TAG=$(docker images | grep -w galera | head -n 1 | awk '{print $2}')
-docker run -d --net=host -e INITIALIZE_CLUSTER=1 -e MYSQL_ROOT_PASS=veryS3cr3t -e WSREP_USER=wsrepuser -e WSREP_PASS=wsreppass -e DEBUG= --name galera galera:$GALERA_TAG
+docker run -d --net=host -e INITIALIZE_CLUSTER=1 -e MYSQL_ROOT_PASS=veryS3cr3t -e WSREP_USER=wsrepuser -e WSREP_PASS=wsreppass -e DEBUG= --name galera galera:latest
 
 echo "Wait till galera is running ."
 wait_for_port 3306 30
@@ -58,8 +57,7 @@ create_keystone_db
 create_glance_db
 
 echo "Starting keystone container"
-KEYSTONE_TAG=$(docker images | grep -w keystone | head -n 1 | awk '{print $2}')
-docker run -d --net=host -e DEBUG="true" -e DB_SYNC="true" --name keystone keystone:$KEYSTONE_TAG
+docker run -d --net=host -e DEBUG="true" -e DB_SYNC="true" --name keystone keystone:latest
 
 echo "Wait till keystone is running ."
 
