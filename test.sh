@@ -4,6 +4,24 @@
 
 GIT_REPO=172.27.10.10
 RELEASE_REPO=172.27.9.130
+CONT_PREFIX=test_glance
+
+. lib/functions.sh
+
+cleanup() {
+    echo "Clean up ..."
+
+    docker stop ${CONT_PREFIX}_galera
+    docker stop ${CONT_PREFIX}_memcached
+    docker stop ${CONT_PREFIX}_keystone
+    docker stop ${CONT_PREFIX}_glance
+
+    docker rm ${CONT_PREFIX}_galera
+    docker rm ${CONT_PREFIX}_memcached
+    docker rm ${CONT_PREFIX}_keystone
+    docker rm ${CONT_PREFIX}_glance
+}
+
 
 . lib/functions.sh
 
