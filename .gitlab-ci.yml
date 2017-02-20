@@ -9,7 +9,7 @@ before_script:
 after_script:
     - docker ps -qa | xargs docker stop || true
     - docker ps -qa | xargs docker rm || true
-    - docker images -qa | uniq  | xargs docker rmi -f || true
+    - docker images -qa | uniq | xargs docker rmi -f || true
 
 test-and-upload:
   script:
