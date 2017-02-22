@@ -4,7 +4,7 @@
 
 GIT_REPO=172.27.10.10
 RELEASE_REPO=172.27.9.130
-CONT_PREFIX=test_glance
+CONT_PREFIX=test
 
 . lib/functions.sh
 
