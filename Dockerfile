@@ -23,7 +23,7 @@ COPY patches/* /patches/
 RUN if [ -f /patches/patch.sh ]; then /patches/patch.sh; fi
 
 # Install glance with dependencies
-RUN cd glance; pip install -r requirements.txt -c /requirements/upper-constraints.txt; pip install supervisor mysql-python python-memcached; python setup.py install
+RUN cd glance; pip install -r requirements.txt -c /requirements/upper-constraints.txt; pip install supervisor python-memcached; python setup.py install
 
 # prepare directories for storing image files and copy configs
 RUN mkdir -p /var/lib/glance/images /etc/glance /etc/supervisord /var/log/supervisord; cp -a /glance/etc/* /etc/glance
