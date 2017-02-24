@@ -2,20 +2,18 @@ FROM osmaster
 
 MAINTAINER Kamil Madac (kamil.madac@t-systems.sk)
 
-ENV http_proxy="http://172.27.10.114:3128"
-ENV https_proxy="http://172.27.10.114:3128"
-ENV no_proxy="127.0.0.1,localhost"
+ENV http_proxy="http://172.27.10.114:3128" https_proxy="http://172.27.10.114:3128" no_proxy="127.0.0.1,localhost"
 
 # Source codes to download
-ENV glance_repo="https://github.com/openstack/glance"
-ENV glance_branch="stable/newton"
-ENV glance_commit=""
+ENV repo="https://github.com/openstack/glance" branch="stable/newton" commit=""
 
-# Download glance source codes
-RUN git clone $glance_repo --depth=1 --single-branch --branch $glance_branch;
-
-# Checkout commit, if it was defined above
-RUN if [ ! -z $glance_commit ]; then cd glance && git checkout $glance_commit; fi
+# Download source codes
+RUN if [ -z $commit ]; then \
+       git clone $repo --single-branch --depth=1 --branch $branch; \
+    else \
+       git clone $repo --single-branch --branch $branch; \
+       cd glance && git checkout $commit; \
+    fi
 
 # Apply source code patches
 RUN mkdir -p /patches
