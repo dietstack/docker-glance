@@ -57,13 +57,13 @@ get_docker_image_from_release osadmin http://${RELEASE_REPO}/docker-osadmin late
 ##### Start Containers
 
 echo "Starting galera container ..."
-docker run -d --net=host -e INITIALIZE_CLUSTER=1 -e MYSQL_ROOT_PASS=veryS3cr3t -e WSREP_USER=wsrepuser -e WSREP_PASS=wsreppass -e DEBUG= --name galera galera:latest
+docker run -d --net=host -e INITIALIZE_CLUSTER=1 -e MYSQL_ROOT_PASS=veryS3cr3t -e WSREP_USER=wsrepuser -e WSREP_PASS=wsreppass -e DEBUG= --name ${CONT_PREFIX}_galera galera:latest
 
 echo "Wait till galera is running ."
 wait_for_port 3306 30
 
 echo "Starting Memcached node (tokens caching) ..."
-docker run -d --net=host -e DEBUG= --name memcached memcached
+docker run -d --net=host -e DEBUG= --name ${CONT_PREFIX}_memcached memcached
 
 # build glance container for current sources
 ./build.sh
@@ -75,7 +75,7 @@ create_db_osadmin keystone keystone veryS3cr3t veryS3cr3t
 create_db_osadmin glance glance veryS3cr3t veryS3cr3t
 
 echo "Starting keystone container"
-docker run -d --net=host -e DEBUG="true" -e DB_SYNC="true" --name keystone keystone:latest
+docker run -d --net=host -e DEBUG="true" -e DB_SYNC="true" --name ${CONT_PREFIX}_keystone keystone:latest
 
 echo "Wait till keystone is running ."
 
@@ -95,7 +95,7 @@ fi
 
 echo "Starting glance container"
 GLANCE_TAG=$(docker images | grep -w glance | head -n 1 | awk '{print $2}')
-docker run -d --net=host -e DEBUG="true" -e DB_SYNC="true" --name glance glance:$GLANCE_TAG
+docker run -d --net=host -e DEBUG="true" -e DB_SYNC="true" --name ${CONT_PREFIX}_glance glance:$GLANCE_TAG
 
 ##### TESTS #####
 
