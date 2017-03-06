@@ -71,8 +71,8 @@ docker run -d --net=host -e DEBUG= --name memcached memcached
 sleep 10
 
 # create databases
-create_keystone_db
-create_glance_db
+create_db_osadmin keystone keystone veryS3cr3t veryS3cr3t
+create_db_osadmin glance glance veryS3cr3t veryS3cr3t
 
 echo "Starting keystone container"
 docker run -d --net=host -e DEBUG="true" -e DB_SYNC="true" --name keystone keystone:latest
