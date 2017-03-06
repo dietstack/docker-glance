@@ -27,15 +27,15 @@ cleanup() {
 
 cleanup() {
     echo "Clean up ..."
-    docker stop galera
-    docker stop memcached
-    docker stop keystone
-    docker stop glance
+    docker stop ${CONT_PREFIX}_galera
+    docker stop ${CONT_PREFIX}_memcached
+    docker stop ${CONT_PREFIX}_keystone
+    docker stop ${CONT_PREFIX}_glance
 
-    docker rm galera
-    docker rm memcached
-    docker rm keystone
-    docker rm glance
+    docker rm ${CONT_PREFIX}_galera
+    docker rm ${CONT_PREFIX}_memcached
+    docker rm ${CONT_PREFIX}_keystone
+    docker rm ${CONT_PREFIX}_glance
 }
 
 cleanup
