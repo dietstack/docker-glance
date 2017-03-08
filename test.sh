@@ -43,16 +43,16 @@ cleanup
 ##### Download/Build containers
 
 # run galera docker image
-get_docker_image_from_release galera http://${RELEASE_REPO}/docker-galera latest
+get_docker_image_from_release galera http://${RELEASE_REPO}/docker-galera/master latest
 
 # pull osmaster docker image
-get_docker_image_from_release osmaster http://${RELEASE_REPO}/docker-osmaster latest
+get_docker_image_from_release osmaster http://${RELEASE_REPO}/docker-osmaster/master latest
 
 # pull keystone image
-get_docker_image_from_release keystone http://${RELEASE_REPO}/docker-keystone latest
+get_docker_image_from_release keystone http://${RELEASE_REPO}/docker-keystone/master latest
 
 # pull osadmin docker image
-get_docker_image_from_release osadmin http://${RELEASE_REPO}/docker-osadmin latest
+get_docker_image_from_release osadmin http://${RELEASE_REPO}/docker-osadmin/master latest
 
 ##### Start Containers
 
