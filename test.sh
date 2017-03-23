@@ -9,6 +9,8 @@ BRANCH=master
 
 . lib/functions.sh
 
+http_proxy_args="-e http_proxy=${http_proxy:-} -e https_proxy=${https_proxy:-} -e no_proxy=${no_proxy:-}"
+
 cleanup() {
     echo "Clean up ..."
 
@@ -76,7 +78,11 @@ create_db_osadmin keystone keystone veryS3cr3t veryS3cr3t
 create_db_osadmin glance glance veryS3cr3t veryS3cr3t
 
 echo "Starting keystone container"
-docker run -d --net=host -e DEBUG="true" -e DB_SYNC="true" --name ${CONT_PREFIX}_keystone keystone:latest
+docker run -d --net=host \
+           -e DEBUG="true" \
+           -e DB_SYNC="true" \
+           $http_proxy_args \
+           --name ${CONT_PREFIX}_keystone keystone:latest
 
 echo "Wait till keystone is running ."
 
@@ -96,7 +102,11 @@ fi
 
 echo "Starting glance container"
 GLANCE_TAG=$(docker images | grep -w glance | head -n 1 | awk '{print $2}')
-docker run -d --net=host -e DEBUG="true" -e DB_SYNC="true" --name ${CONT_PREFIX}_glance glance:$GLANCE_TAG
+docker run -d --net=host \
+           -e DEBUG="true" \
+           -e DB_SYNC="true" \
+           $http_proxy_args \
+           --name ${CONT_PREFIX}_glance glance:$GLANCE_TAG
 
 ##### TESTS #####
 
@@ -117,14 +127,14 @@ fi
 echo "Return code $?"
 
 # bootstrap openstack settings and upload image to glance
-docker run --net=host osadmin /bin/bash -c ". /app/tokenrc; bash /app/bootstrap.sh"
+docker run --net=host --rm $http_proxy_args osadmin /bin/bash -c ". /app/tokenrc; bash /app/bootstrap.sh"
 ret=$?
 if [ $ret -ne 0 ]; then
     echo "Error: Keystone bootstrap error ${ret}!"
     exit $ret
 fi
 
-docker run --net=host osadmin /bin/bash -c ". /app/adminrc; openstack image create --container-format bare --disk-format qcow2 --file /app/cirros.img --public cirros"
+docker run --net=host --rm $http_proxy_args osadmin /bin/bash -c ". /app/adminrc; openstack image create --container-format bare --disk-format qcow2 --file /app/cirros.img --public cirros"
 ret=$?
 if [ $ret -ne 0 ]; then
     echo "Error: Cirros image import error ${ret}!"
