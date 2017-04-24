@@ -13,23 +13,6 @@ http_proxy_args="-e http_proxy=${http_proxy:-} -e https_proxy=${https_proxy:-} -
 
 cleanup() {
     echo "Clean up ..."
-
-    docker stop ${CONT_PREFIX}_galera
-    docker stop ${CONT_PREFIX}_memcached
-    docker stop ${CONT_PREFIX}_keystone
-    docker stop ${CONT_PREFIX}_glance
-
-    docker rm ${CONT_PREFIX}_galera
-    docker rm ${CONT_PREFIX}_memcached
-    docker rm ${CONT_PREFIX}_keystone
-    docker rm ${CONT_PREFIX}_glance
-}
-
-
-. lib/functions.sh
-
-cleanup() {
-    echo "Clean up ..."
     docker stop ${CONT_PREFIX}_galera
     docker stop ${CONT_PREFIX}_memcached
     docker stop ${CONT_PREFIX}_keystone
