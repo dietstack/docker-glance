@@ -46,7 +46,7 @@ echo "Starting galera container ..."
 docker run -d --net=host -e INITIALIZE_CLUSTER=1 -e MYSQL_ROOT_PASS=veryS3cr3t -e WSREP_USER=wsrepuser -e WSREP_PASS=wsreppass -e DEBUG= --name ${CONT_PREFIX}_galera galera:latest
 
 echo "Wait till galera is running ."
-wait_for_port 3306 30
+wait_for_port 3306 120
 
 echo "Starting Memcached node (tokens caching) ..."
 docker run -d --net=host -e DEBUG= --name ${CONT_PREFIX}_memcached memcached
@@ -69,14 +69,14 @@ docker run -d --net=host \
 
 echo "Wait till keystone is running ."
 
-wait_for_port 5000 30
+wait_for_port 5000 120
 ret=$?
 if [ $ret -ne 0 ]; then
     echo "Error: Port 5000 (Keystone) not bounded!"
     exit $ret
 fi
 
-wait_for_port 35357 30
+wait_for_port 35357 120
 ret=$?
 if [ $ret -ne 0 ]; then
     echo "Error: Port 35357 (Keystone Admin) not bounded!"
@@ -93,7 +93,7 @@ docker run -d --net=host \
 
 ##### TESTS #####
 
-wait_for_port 9191 30
+wait_for_port 9191 120
 ret=$?
 if [ $ret -ne 0 ]; then
     echo "Error: Port 9191 (Glance Registry) not bounded!"
@@ -101,7 +101,7 @@ if [ $ret -ne 0 ]; then
     exit $ret
 fi
 
-wait_for_port 9292 30
+wait_for_port 9292 120
 ret=$?
 if [ $ret -ne 0 ]; then
     echo "Error: Port 9292 (Glance API) not bounded!"
