@@ -73,7 +73,11 @@ if [[ $OVERRIDE -eq 0 ]]; then
         echo "$LOG_MESSAGE  ==> done"
 fi
 
+
 [[ $DB_SYNC ]] && echo "Running db_sync ..." && glance-manage db sync
+
+echo "Loading default metadata definitions ..."
+glance-manage db_load_metadefs
 
 echo "$LOG_MESSAGE starting glance"
 exec "$@"
