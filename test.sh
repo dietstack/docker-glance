@@ -97,6 +97,7 @@ wait_for_port 9191 30
 ret=$?
 if [ $ret -ne 0 ]; then
     echo "Error: Port 9191 (Glance Registry) not bounded!"
+    docker logs ${CONT_PREFIX}_glance
     exit $ret
 fi
 
@@ -104,6 +105,7 @@ wait_for_port 9292 30
 ret=$?
 if [ $ret -ne 0 ]; then
     echo "Error: Port 9292 (Glance API) not bounded!"
+    docker logs ${CONT_PREFIX}_glance
     exit $ret
 fi
 
