@@ -52,7 +52,7 @@ echo "Starting Memcached node (tokens caching) ..."
 docker run -d --net=host -e DEBUG= --name ${CONT_PREFIX}_memcached memcached
 
 # build glance container for current sources
-./build.sh
+./build.sh --no-cache
 
 sleep 10
 
@@ -88,6 +88,7 @@ GLANCE_TAG=$(docker images | grep -w glance | head -n 1 | awk '{print $2}')
 docker run -d --net=host \
            -e DEBUG="true" \
            -e DB_SYNC="true" \
+           -e LOAD_META="true" \
            $http_proxy_args \
            --name ${CONT_PREFIX}_glance glance:$GLANCE_TAG
 
@@ -112,12 +113,14 @@ fi
 echo "Return code $?"
 
 # bootstrap openstack settings and upload image to glance
+set +e
 docker run --net=host --rm $http_proxy_args osadmin /bin/bash -c ". /app/tokenrc; bash /app/bootstrap.sh"
 ret=$?
-if [ $ret -ne 0 ]; then
+if [ $ret -ne 0 ] && [ $ret -ne 128 ]; then
     echo "Error: Keystone bootstrap error ${ret}!"
     exit $ret
 fi
+set -e
 
 docker run --net=host --rm $http_proxy_args osadmin /bin/bash -c ". /app/adminrc; openstack image create --container-format bare --disk-format qcow2 --file /app/cirros.img --public cirros"
 ret=$?

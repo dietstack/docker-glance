@@ -76,8 +76,7 @@ fi
 
 [[ $DB_SYNC ]] && echo "Running db_sync ..." && glance-manage db sync
 
-echo "Loading default metadata definitions ..."
-glance-manage db_load_metadefs
+[[ $LOAD_META ]] && echo "Loading default metadata defs ..." && glance-manage db_load_metadefs
 
 echo "$LOG_MESSAGE starting glance"
 exec "$@"
