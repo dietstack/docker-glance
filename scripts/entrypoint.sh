@@ -36,14 +36,14 @@ CONF_DIR="/etc/glance"
 OVERRIDE_DIR="/glance-override"
 #CONF_FILES=("glance-api.conf" "glance-registry.conf")
 CONF_FILES=(`find $CONF_DIR -maxdepth 1 -type f -printf "%f\n"`)
-
+OVERRIDE_CONF_FILES=(`find $OVERRIDE_DIR -maxdepth 1 -type f -printf "%f\n"`)
 
 # check if external configs are provided
 echo "$LOG_MESSAGE Checking if external config is provided.."
-if [[ -f "$OVERRIDE_DIR/${CONF_FILES[0]}" ]]; then
-        echo "$LOG_MESSAGE  ==> external config found!. Using it."
+if [[ "$(ls -A $OVERRIDE_DIR)" ]]; then
+        echo "$LOG_MESSAGE  ==> external configs found!. Using it."
         OVERRIDE=1
-        for CONF in ${CONF_FILES[*]}; do
+        for CONF in ${OVERRIDE_CONF_FILES[*]}; do
                 rm -f "$CONF_DIR/$CONF"
                 ln -s "$OVERRIDE_DIR/$CONF" "$CONF_DIR/$CONF"
         done
