@@ -2,10 +2,7 @@
 # Integration test for glance service
 # Test runs mysql,memcached,keystone and glance container and checks whether glance is running on public and admin ports
 
-GIT_REPO=172.27.10.10
-RELEASE_REPO=172.27.9.130
 CONT_PREFIX=test
-BRANCH=master
 
 . lib/functions.sh
 
@@ -13,48 +10,36 @@ http_proxy_args="-e http_proxy=${http_proxy:-} -e https_proxy=${https_proxy:-} -
 
 cleanup() {
     echo "Clean up ..."
-    docker stop ${CONT_PREFIX}_galera
+    docker stop ${CONT_PREFIX}_mariadb
     docker stop ${CONT_PREFIX}_memcached
     docker stop ${CONT_PREFIX}_keystone
     docker stop ${CONT_PREFIX}_glance
 
-    docker rm ${CONT_PREFIX}_galera
-    docker rm ${CONT_PREFIX}_memcached
-    docker rm ${CONT_PREFIX}_keystone
-    docker rm ${CONT_PREFIX}_glance
+    docker rm -v ${CONT_PREFIX}_mariadb
+    docker rm -v ${CONT_PREFIX}_memcached
+    docker rm -v ${CONT_PREFIX}_keystone
+    docker rm -v ${CONT_PREFIX}_glance
 }
 
 cleanup
 
-##### Download/Build containers
-
-# run galera docker image
-get_docker_image_from_release galera http://${RELEASE_REPO}/docker-galera/${BRANCH} latest
-
-# pull osmaster docker image
-get_docker_image_from_release osmaster http://${RELEASE_REPO}/docker-osmaster/${BRANCH} latest
-
-# pull keystone image
-get_docker_image_from_release keystone http://${RELEASE_REPO}/docker-keystone/${BRANCH} latest
-
-# pull osadmin docker image
-get_docker_image_from_release osadmin http://${RELEASE_REPO}/docker-osadmin/${BRANCH} latest
-
 ##### Start Containers
 
-echo "Starting galera container ..."
-docker run -d --net=host -e INITIALIZE_CLUSTER=1 -e MYSQL_ROOT_PASS=veryS3cr3t -e WSREP_USER=wsrepuser -e WSREP_PASS=wsreppass -e DEBUG= --name ${CONT_PREFIX}_galera galera:latest
+echo "Starting mariadb container ..."
+docker run  --net=host -d -e MYSQL_ROOT_PASSWORD=veryS3cr3t --name ${CONT_PREFIX}_mariadb \
+       mariadb:10.2
 
-echo "Wait till galera is running ."
+echo "Wait till mariadb is running ."
 wait_for_port 3306 120
 
 echo "Starting Memcached node (tokens caching) ..."
 docker run -d --net=host -e DEBUG= --name ${CONT_PREFIX}_memcached memcached
 
 # build glance container for current sources
-./build.sh --no-cache
+./build.sh
 
-sleep 10
+echo "Wait till Memcached is running ."
+wait_for_port 11211 30
 
 # create databases
 create_db_osadmin keystone keystone veryS3cr3t veryS3cr3t
@@ -65,7 +50,7 @@ docker run -d --net=host \
            -e DEBUG="true" \
            -e DB_SYNC="true" \
            $http_proxy_args \
-           --name ${CONT_PREFIX}_keystone keystone:latest
+           --name ${CONT_PREFIX}_keystone dietstack/keystone:latest
 
 echo "Wait till keystone is running ."
 
@@ -90,7 +75,7 @@ docker run -d --net=host \
            -e DB_SYNC="true" \
            -e LOAD_META="true" \
            $http_proxy_args \
-           --name ${CONT_PREFIX}_glance glance:$GLANCE_TAG
+           --name ${CONT_PREFIX}_glance dietstack/glance:$GLANCE_TAG
 
 ##### TESTS #####
 
