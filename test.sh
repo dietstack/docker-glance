@@ -2,6 +2,7 @@
 # Integration test for glance service
 # Test runs mysql,memcached,keystone and glance container and checks whether glance is running on public and admin ports
 
+DOCKER_PROJ_NAME=${DOCKER_PROJ_NAME:-''}
 CONT_PREFIX=test
 
 . lib/functions.sh
@@ -50,7 +51,7 @@ docker run -d --net=host \
            -e DEBUG="true" \
            -e DB_SYNC="true" \
            $http_proxy_args \
-           --name ${CONT_PREFIX}_keystone dietstack/keystone:latest
+           --name ${CONT_PREFIX}_keystone ${DOCKER_PROJ_NAME}keystone:latest
 
 echo "Wait till keystone is running ."
 
@@ -75,7 +76,7 @@ docker run -d --net=host \
            -e DB_SYNC="true" \
            -e LOAD_META="true" \
            $http_proxy_args \
-           --name ${CONT_PREFIX}_glance dietstack/glance:$GLANCE_TAG
+           --name ${CONT_PREFIX}_glance ${DOCKER_PROJ_NAME}glance:$GLANCE_TAG
 
 ##### TESTS #####
 
