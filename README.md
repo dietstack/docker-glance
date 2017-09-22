@@ -3,7 +3,7 @@
 ### Using
 
 ```
-git clone git@172.27.10.10:openstack/glance-keystone.git
+git clone git@github.com:dietstack/glance-keystone.git
 cd docker-glance
 ./build.sh
 ```
