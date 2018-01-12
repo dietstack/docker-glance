@@ -7,19 +7,21 @@ COPY patches/* /patches/
 
 RUN echo 'APT::Install-Recommends "false";' >> /etc/apt/apt.conf && \
     echo 'APT::Get::Install-Suggests "false";' >> /etc/apt/apt.conf && \
-    apt update; apt install -y ca-certificates wget python libpython2.7 nginx; \
+    apt update; apt install -y ca-certificates wget python libpython2.7 nginx netbase; \
     update-ca-certificates; \
     wget --no-check-certificate https://bootstrap.pypa.io/get-pip.py; \
     python get-pip.py; \
     rm get-pip.py; \
-    wget https://raw.githubusercontent.com/openstack/requirements/stable/newton/upper-constraints.txt -P /app && \
+    wget https://raw.githubusercontent.com/openstack/requirements/stable/pike/upper-constraints.txt -P /app && \
     /patches/stretch-crypto.sh && \
     apt-get clean && apt autoremove && \
     rm -rf /var/lib/apt/lists/*; rm -rf /root/.cache
 
 # Source codes to download
-ENV SVC_NAME=glance
-ENV REPO="https://github.com/openstack/$SVC_NAME" BRANCH="stable/newton" COMMIT="6d2a08635"
+ENV SVC_NAME=glance SVC_VERSION=15.0.0
+ENV REPO="https://github.com/openstack/$SVC_NAME" BRANCH="stable/pike"
+#COMMIT="05a129e"
+#ENV RELEASE_URL=https://github.com/openstack/$SVC_NAME/archive/$SVC_VERSION.tar.gz
 
 # Install glance with dependencies
 ENV BUILD_PACKAGES="git build-essential libssl-dev libffi-dev python-dev"
@@ -46,7 +48,7 @@ RUN apt update; apt install -y $BUILD_PACKAGES && \
     rm -rf /var/lib/apt/lists/* && rm -rf /root/.cache
 
 # prepare directories for storing image files and copy configs
-RUN mkdir -p /var/lib/glance/images /etc/glance /etc/supervisord /var/log/supervisord; cp -a /glance/etc/* /etc/glance
+RUN mkdir -p /var/lib/glance/images /etc/glance /etc/supervisord /var/log/supervisord
 
 # copy supervisor config
 COPY configs/supervisord/supervisord.conf /etc
