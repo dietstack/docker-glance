@@ -54,7 +54,7 @@ RUN mkdir -p /var/lib/glance/images /etc/glance /etc/supervisord /var/log/superv
 COPY configs/supervisord/supervisord.conf /etc
 
 # copy keystone configs
-COPY configs/glance/* /etc/glance/
+COPY configs/glance/ /etc/glance/
 
 # external volume
 VOLUME /glance-override
